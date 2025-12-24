@@ -1,9 +1,13 @@
 package br.com.codesphere.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import br.com.codesphere.dtos.CreateProblemDTO;
 import br.com.codesphere.dtos.ProblemCaseTestDTO;
+import br.com.codesphere.dtos.ProblemDTO;
+import br.com.codesphere.dtos.ProblemListDTO;
 import br.com.codesphere.entities.CategoryEntity;
 import br.com.codesphere.entities.ProblemCaseTestEntity;
 import br.com.codesphere.entities.ProblemEntity;
@@ -34,7 +38,7 @@ public class ProblemService {
   CategoryRepository categoryRepository;
 
   @Transactional
-  public void create(CreateProblemDTO request) {
+  public void create(CreateProblemDTO request) throws ApplicationException {
     CategoryEntity category = categoryRepository.findById(request.categoryId);
 
     if (Objects.isNull(category)) {
@@ -45,7 +49,7 @@ public class ProblemService {
     ProblemEntity problem = new ProblemEntity();
 
     String formattedTemplate = StringUtils
-        .convertToBase64(StringUtils.removeAllBlankSpaces(request.templateHtml));
+        .encodeBase64(StringUtils.removeAllNewLines(request.templateHtml));
 
     problem.author = user;
     problem.templateHtml = formattedTemplate;
@@ -59,13 +63,27 @@ public class ProblemService {
       ProblemCaseTestEntity problemCaseTest = new ProblemCaseTestEntity();
       ProblemCaseTestDTO problemCaseTestDTO = request.testCases.get(i);
 
-      problemCaseTest.input = StringUtils.convertToBase64(problemCaseTestDTO.input);
-      problemCaseTest.expectedOutput = StringUtils.convertToBase64(problemCaseTestDTO.expectedOutput);
+      problemCaseTest.input = StringUtils.encodeBase64(problemCaseTestDTO.input);
+      problemCaseTest.expectedOutput = StringUtils.encodeBase64(problemCaseTestDTO.expectedOutput);
       problemCaseTest.problem = problem;
 
       problemCaseTestRepository.persist(problemCaseTest);
     }
 
+  }
+
+  public ProblemListDTO listByCategory(long categoryId) {
+    List<ProblemEntity> problems = problemRepository.findByCategoryId(categoryId);
+    List<ProblemDTO> problemList = new ArrayList<>();
+    
+
+    problems.forEach((p) -> {
+      ProblemDTO problem = new ProblemDTO(p.id, StringUtils.decodeBase64(p.templateHtml), p.title);
+
+      problemList.add(problem);
+    });
+    
+    return new ProblemListDTO(problemList);
   }
 
 }

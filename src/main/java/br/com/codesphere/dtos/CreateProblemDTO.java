@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class CreateProblemDTO {
+
   @NotBlank(message = "Nome é obrigatório")
   @Size(min = 10, max = 30, message = "Título deve ter entre 10 e 30 caracteres")
   public String title;
