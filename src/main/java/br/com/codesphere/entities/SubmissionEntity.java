@@ -11,29 +11,30 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "problem")
-public class ProblemEntity extends PanacheEntity {
+@Table(name = "submission")
+public class SubmissionEntity extends PanacheEntity {
+  
   @Column(name = "created_at", updatable = false, insertable = false)
   public LocalDateTime createdAt;
 
   @Column(name = "updated_at", updatable = false, insertable = false)
   public LocalDateTime updatedAt;
 
-  @Column(name = "template_html", length=4000)
-  public String templateHtml;
+  @Column(name = "status")
+  public int status;
 
-  @Column(name = "title")
-  public String title;
+  @Column(name = "comment")
+  public String comment;
 
-  @Column(name = "time_limit")
-  public int timeLimit;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "author")
-  public UserEntity author;
+  @Column(name = "source_code", length=4000)
+  public String sourceCode;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "category_id")
-  public CategoryEntity category;
+  @JoinColumn(name = "user_id")
+  public UserEntity user;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "problem_id")
+  public ProblemEntity problem;
 
 }

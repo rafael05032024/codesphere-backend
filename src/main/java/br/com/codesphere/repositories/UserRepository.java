@@ -6,5 +6,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class UserRepository implements PanacheRepository<UserEntity> {
+  
+  public UserEntity findByEmail(String email) {
+    return find("email", email).firstResult();
+  }
 
 }

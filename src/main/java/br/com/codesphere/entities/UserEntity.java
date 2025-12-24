@@ -19,4 +19,7 @@ public class UserEntity extends PanacheEntity {
   @Column(name = "name")
   public String name;
 
+  @Column(name = "email")
+  public String email;
+
 }
