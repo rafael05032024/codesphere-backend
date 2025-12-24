@@ -1,8 +1,12 @@
 package br.com.codesphere.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import br.com.codesphere.dtos.CreateSubmissionDTO;
+import br.com.codesphere.dtos.CreateSubmissionResponseDTO;
+import br.com.codesphere.dtos.SubmissionDTO;
 import br.com.codesphere.entities.ProblemEntity;
 import br.com.codesphere.entities.SubmissionEntity;
 import br.com.codesphere.entities.UserEntity;
@@ -27,7 +31,7 @@ public class SubmissionService {
   UserRepository userRepository;
 
   @Transactional
-  public void create(CreateSubmissionDTO request, Long userId) throws ApplicationException {
+  public CreateSubmissionResponseDTO create(CreateSubmissionDTO request, Long userId) throws ApplicationException {
     ProblemEntity problem = problemRepository.findById(request.problemId);
 
     if (Objects.isNull(problem)) {
@@ -44,6 +48,19 @@ public class SubmissionService {
     submission.status = 0;
     
     submissionRepository.persist(submission);
+
+    return new CreateSubmissionResponseDTO(submission.id);
+  }
+
+  public List<SubmissionDTO> listByUserId(Long userId) {
+    List<SubmissionEntity> dbSubmissions = submissionRepository.listByUserId(userId);
+    List<SubmissionDTO> submissionsList = new ArrayList<>();
+
+    dbSubmissions.forEach(s -> {
+      submissionsList.add(new SubmissionDTO(s.sourceCode, s.id, s.status));
+    });
+
+    return submissionsList;
   }
 
 }
