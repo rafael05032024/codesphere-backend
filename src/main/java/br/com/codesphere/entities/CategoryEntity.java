@@ -10,13 +10,13 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "category")
 public class CategoryEntity extends PanacheEntity {
-
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false, insertable = false)
     public LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", updatable = false, insertable = false)
     public LocalDateTime updatedAt;
 
     @Column(name = "description")
     public String description;
+
 }

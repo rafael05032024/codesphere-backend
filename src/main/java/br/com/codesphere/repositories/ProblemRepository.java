@@ -1,0 +1,10 @@
+package br.com.codesphere.repositories;
+
+import br.com.codesphere.entities.ProblemEntity;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class ProblemRepository implements PanacheRepository<ProblemEntity> {
+
+}
