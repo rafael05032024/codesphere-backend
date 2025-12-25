@@ -10,7 +10,7 @@ public class StringUtils {
     return Base64.getEncoder().encodeToString(s.getBytes(StandardCharsets.UTF_8));
   }
 
-  public static String decodeBase64(String s) throws IllegalArgumentException  {
+  public static String decodeBase64(String s) throws IllegalArgumentException {
     byte[] bytes = Base64.getDecoder().decode(s);
 
     return new String(bytes, StandardCharsets.UTF_8);
@@ -27,11 +27,15 @@ public class StringUtils {
 
     try {
       decodeBase64(s);
-    } catch(IllegalArgumentException ex) {
+    } catch (IllegalArgumentException ex) {
       return false;
     }
 
     return true;
+  }
+
+  public static int getSizeInBytes(String s) {
+    return s.getBytes(StandardCharsets.UTF_8).length;
   }
 
 }

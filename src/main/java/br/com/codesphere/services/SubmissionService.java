@@ -11,13 +11,16 @@ import br.com.codesphere.dtos.SubmissionListDTO;
 import br.com.codesphere.dtos.SubmissionListItemDTO;
 import br.com.codesphere.entities.LanguageEntity;
 import br.com.codesphere.entities.ProblemEntity;
+import br.com.codesphere.entities.SubmissionCompilationEntity;
 import br.com.codesphere.entities.SubmissionEntity;
 import br.com.codesphere.entities.UserEntity;
 import br.com.codesphere.exception.ApplicationException;
 import br.com.codesphere.repositories.LanguageRepository;
 import br.com.codesphere.repositories.ProblemRepository;
+import br.com.codesphere.repositories.SubmissionCompilationRepository;
 import br.com.codesphere.repositories.SubmissionRepository;
 import br.com.codesphere.repositories.UserRepository;
+import br.com.codesphere.utils.StringUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -36,6 +39,9 @@ public class SubmissionService {
 
   @Inject
   LanguageRepository languageRepository;
+
+  @Inject
+  SubmissionCompilationRepository submissionCompilationRepository;
 
   @Transactional
   public CreateSubmissionResponseDTO create(CreateSubmissionDTO request, Long userId) throws ApplicationException {
@@ -87,8 +93,23 @@ public class SubmissionService {
       throw new ApplicationException("Registro não entrado!", 404);
     }
 
+    List<SubmissionCompilationEntity> compilations = this.submissionCompilationRepository
+        .listBySubmissionId(submissionId);
+
+    double totalMemory = 0;
+    double totalTime = 0;
+
+    for (SubmissionCompilationEntity c : compilations) {
+      totalMemory += c.memory;
+      totalTime += c.time;
+    }
+
+    double averageMemory = totalMemory / compilations.size();
+    double averageTime = totalTime / compilations.size();
+    int size = StringUtils.getSizeInBytes(submission.sourceCode);
+
     return new SubmissionDetailDTO(submission.sourceCode, submission.id, submission.status, submission.language.name,
-        submission.comment, submission.problem.id, submission.problem.title);
+        submission.comment, submission.problem.id, submission.problem.title, averageMemory, averageTime, size);
   }
 
 }
