@@ -1,9 +1,0 @@
-FROM eclipse-temurin:21-jdk
-
-WORKDIR /app
-
-RUN chmod +x mvnw && ./mvnw dependency:go-offline
-
-EXPOSE 8080
-
-CMD ["./mvnw", "quarkus:dev"]
