@@ -5,12 +5,14 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import br.com.codesphere.entities.JobControlEntity;
 import br.com.codesphere.entities.ProblemCaseTestEntity;
 import br.com.codesphere.entities.SubmissionCompilationEntity;
 import br.com.codesphere.entities.SubmissionEntity;
 import br.com.codesphere.integration.judge0.Judge0RestClient;
 import br.com.codesphere.integration.judge0.dtos.Judge0SubmissionRequestDTO;
 import br.com.codesphere.integration.judge0.dtos.Judge0TokenDTO;
+import br.com.codesphere.repositories.JobControlRepository;
 import br.com.codesphere.repositories.ProblemCaseTestRepository;
 import br.com.codesphere.repositories.SubmissionCompilationRepository;
 import br.com.codesphere.repositories.SubmissionRepository;
@@ -42,53 +44,88 @@ public class HandleCreatedSubmissions {
     SubmissionCompilationRepository submissionCompilationRepository;
 
     @Inject
+    JobControlRepository jobControlRepository;
+
+    @Inject
     @RestClient
     Judge0RestClient judge0;
 
     @Scheduled(every = "5s")
     public void execute() {
-        System.setProperty("java.net.preferIPv4Stack", "true");
+        JobControlEntity job = jobControlRepository.findByName("hcs");
 
-        List<SubmissionEntity> submissions = this.submissionRepository.listByStatus(0);
-
-        if (Objects.isNull(submissions) || submissions.isEmpty()) {
-            System.out.println("Nenhuma código para submter para compilação!");
-
+        if (job.isRunning) {
+            System.out.println("[HCS] Job is already running!");
             return;
         }
 
-        System.out.println("Submetendo " + submissions.size() + " códigos para compilação");
+        lock(job);
 
-        for (int i = 0; i < submissions.size(); i++) {
-            SubmissionEntity submission = submissions.get(i);
+        try {
+            System.setProperty("java.net.preferIPv4Stack", "true");
 
-            List<ProblemCaseTestEntity> testCases = problemCaseTestRepository.listByProblemId(submission.problem.id);
+            List<SubmissionEntity> submissions = this.submissionRepository.listByStatus(0);
 
-            for (int j = 0; j < testCases.size(); j++) {
+            if (Objects.isNull(submissions) || submissions.isEmpty()) {
+                System.out.println("Nenhuma código para submter para compilação!");
 
-                ProblemCaseTestEntity testCase = testCases.get(j);
+                free(job);
 
-                System.out.println("Submitting teste case " + testCase.id);
-
-                Judge0SubmissionRequestDTO request = new Judge0SubmissionRequestDTO(52, submission.sourceCode,
-                        testCase.input);
-
-                Judge0TokenDTO response = judge0.createSubmission(true, false, request);
-
-                SubmissionCompilationEntity submissionCompilationEntity = new SubmissionCompilationEntity();
-
-                submissionCompilationEntity.submission = submission;
-                submissionCompilationEntity.problemCaseTest = testCase;
-                submissionCompilationEntity.token = response.token;
-
-                submissionCompilationRepository.persist(submissionCompilationEntity);
+                return;
             }
 
-            submission.status = 1;
+            System.out.println("Submetendo " + submissions.size() + " códigos para compilação");
 
-            submission.persist();
+            for (int i = 0; i < submissions.size(); i++) {
+                SubmissionEntity submission = submissions.get(i);
+
+                List<ProblemCaseTestEntity> testCases = problemCaseTestRepository
+                        .listByProblemId(submission.problem.id);
+
+                for (int j = 0; j < testCases.size(); j++) {
+
+                    ProblemCaseTestEntity testCase = testCases.get(j);
+
+                    System.out.println("Submitting teste case " + testCase.id);
+
+                    Judge0SubmissionRequestDTO request = new Judge0SubmissionRequestDTO(52, submission.sourceCode,
+                            testCase.input);
+
+                    Judge0TokenDTO response = judge0.createSubmission(true, false, request);
+
+                    SubmissionCompilationEntity submissionCompilationEntity = new SubmissionCompilationEntity();
+
+                    submissionCompilationEntity.submission = submission;
+                    submissionCompilationEntity.problemCaseTest = testCase;
+                    submissionCompilationEntity.token = response.token;
+
+                    submissionCompilationRepository.persist(submissionCompilationEntity);
+                }
+
+                submission.status = 1;
+
+                submission.persist();
+            }
+
+        } catch (Exception ex) {
         }
 
+        System.out.println("[HCS] free job!");
+
+        free(job);
+
+    }
+
+    private void lock(JobControlEntity job) {
+        job.isRunning = true;
+
+        job.persist();
+    }
+
+    private void free(JobControlEntity job) {
+        job.isRunning = false;
+
+        job.persist();
     }
 
 }
