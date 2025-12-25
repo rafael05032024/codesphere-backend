@@ -20,6 +20,12 @@ public class SubmissionCompilationEntity extends PanacheEntity {
   @Column(name = "stdout")
   public String stdout;
 
+  @Column(name = "memory")
+  public double memory;
+
+  @Column(name = "time")
+  public double time;
+
   @Column(name = "created_at", updatable = false, insertable = false)
   public LocalDateTime createdAt;
 

@@ -3,7 +3,7 @@ package br.com.codesphere.integration.judge0.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Judge0SubmissionResponseDTO {
-  
+
   @JsonProperty("source_code")
   public String sourceCode;
 
@@ -15,6 +15,12 @@ public class Judge0SubmissionResponseDTO {
 
   @JsonProperty("stdout")
   public String stdOut;
+
+  @JsonProperty("time")
+  public String time;
+
+  @JsonProperty("memory")
+  public double memory;
 
   @JsonProperty("status_id")
   public int statusId;

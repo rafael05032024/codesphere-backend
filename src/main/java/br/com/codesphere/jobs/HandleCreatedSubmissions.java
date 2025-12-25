@@ -1,6 +1,8 @@
 package br.com.codesphere.jobs;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -50,11 +52,14 @@ public class HandleCreatedSubmissions {
     @RestClient
     Judge0RestClient judge0;
 
-    @Scheduled(every = "5s")
-    public void execute() {
-        JobControlEntity job = jobControlRepository.findByName("hcs");
+    Map<String, Boolean> mapper = new HashMap<>();
 
-        if (job.isRunning) {
+    @Scheduled(every = "5s")
+    public void execute() throws InterruptedException {
+        JobControlEntity job = jobControlRepository.findByName("hcs");
+        boolean isRunning = !Objects.isNull(mapper.get("hcs")) && mapper.get("hcs") == true;
+
+        if (job.isRunning || isRunning) {
             System.out.println("[HCS] Job is already running!");
             return;
         }
@@ -84,7 +89,19 @@ public class HandleCreatedSubmissions {
 
                 for (int j = 0; j < testCases.size(); j++) {
 
+                    List<SubmissionCompilationEntity> compilations = submissionCompilationRepository
+                            .listBySubmissionId(submission.id);
+
                     ProblemCaseTestEntity testCase = testCases.get(j);
+
+                    boolean isEmpty = compilations.stream()
+                            .filter((c) -> Objects.equals(c.problemCaseTest.id, testCase.id)).findFirst().isEmpty();
+
+                    if (!isEmpty) {
+                        System.out.println("Jumping case test " + testCase.id);
+
+                        continue;
+                    }
 
                     System.out.println("Submitting teste case " + testCase.id);
 
@@ -108,6 +125,9 @@ public class HandleCreatedSubmissions {
             }
 
         } catch (Exception ex) {
+            System.out.println("[HCS] EXECUTION ERROR " + ex.getMessage());
+
+            Thread.sleep(1500);
         }
 
         System.out.println("[HCS] free job!");
@@ -118,12 +138,14 @@ public class HandleCreatedSubmissions {
 
     private void lock(JobControlEntity job) {
         job.isRunning = true;
+        mapper.put("hcs", true);
 
         job.persist();
     }
 
     private void free(JobControlEntity job) {
         job.isRunning = false;
+        mapper.put("hcs", false);
 
         job.persist();
     }

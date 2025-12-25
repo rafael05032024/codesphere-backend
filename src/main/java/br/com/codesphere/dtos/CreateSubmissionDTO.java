@@ -4,11 +4,14 @@ import io.smallrye.common.constraint.NotNull;
 import jakarta.validation.constraints.NotBlank;
 
 public class CreateSubmissionDTO {
-  
+
   @NotBlank
   public String sourceCode;
 
   @NotNull
   public Long problemId;
+
+  @NotNull
+  public Long languageId;
 
 }

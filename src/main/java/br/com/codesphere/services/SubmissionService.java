@@ -9,10 +9,12 @@ import br.com.codesphere.dtos.CreateSubmissionResponseDTO;
 import br.com.codesphere.dtos.SubmissionDetailDTO;
 import br.com.codesphere.dtos.SubmissionListDTO;
 import br.com.codesphere.dtos.SubmissionListItemDTO;
+import br.com.codesphere.entities.LanguageEntity;
 import br.com.codesphere.entities.ProblemEntity;
 import br.com.codesphere.entities.SubmissionEntity;
 import br.com.codesphere.entities.UserEntity;
 import br.com.codesphere.exception.ApplicationException;
+import br.com.codesphere.repositories.LanguageRepository;
 import br.com.codesphere.repositories.ProblemRepository;
 import br.com.codesphere.repositories.SubmissionRepository;
 import br.com.codesphere.repositories.UserRepository;
@@ -32,6 +34,9 @@ public class SubmissionService {
   @Inject
   UserRepository userRepository;
 
+  @Inject
+  LanguageRepository languageRepository;
+
   @Transactional
   public CreateSubmissionResponseDTO create(CreateSubmissionDTO request, Long userId) throws ApplicationException {
     ProblemEntity problem = problemRepository.findById(request.problemId);
@@ -40,12 +45,19 @@ public class SubmissionService {
       throw new ApplicationException("Problema não encontrado!", 404);
     }
 
+    LanguageEntity language = languageRepository.findById(request.languageId);
+
+    if (Objects.isNull(language)) {
+      throw new ApplicationException("Linguagem não encontrada!", 404);
+    }
+
     UserEntity user = userRepository.findById(userId);
 
     SubmissionEntity submission = new SubmissionEntity();
 
     submission.problem = problem;
     submission.user = user;
+    submission.language = language;
     submission.sourceCode = request.sourceCode;
     submission.status = 0;
 

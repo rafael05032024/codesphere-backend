@@ -1,6 +1,9 @@
 package br.com.codesphere.jobs;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -36,11 +39,14 @@ public class HandleProcessingSubmissions {
   @RestClient
   Judge0RestClient judge0;
 
+  Map<String, Boolean> mapper = new HashMap<>();
+
   @Scheduled(every = "10s")
   public void execute() {
     JobControlEntity job = jobControlRepository.findByName("hps");
+    boolean isRunning = !Objects.isNull(mapper.get("hps")) && mapper.get("hps") == true;
 
-    if (job.isRunning) {
+    if (job.isRunning || isRunning) {
       System.out.println("[HPS] Job is already running!");
       return;
     }
@@ -51,6 +57,8 @@ public class HandleProcessingSubmissions {
       System.setProperty("java.net.preferIPv4Stack", "true");
 
       List<SubmissionEntity> processingSubmissions = submissionRepository.listByStatus(1);
+
+      System.out.println("[HPS] Processing " + processingSubmissions.size() + " submissions");
 
       for (int i = 0; i < processingSubmissions.size(); i++) {
         SubmissionEntity submission = processingSubmissions.get(i);
@@ -70,6 +78,11 @@ public class HandleProcessingSubmissions {
 
             return;
           }
+
+          compilation.memory = response.memory;
+          compilation.time = Double.parseDouble(response.time);
+
+          compilation.persist();
 
           if (response.statusId == 3) {
             if (!response.stdOut.equals(compilation.problemCaseTest.expectedOutput)) {
@@ -93,7 +106,8 @@ public class HandleProcessingSubmissions {
         }
 
       }
-    } catch (Exception ex) {
+    } catch (RuntimeException ex) {
+      System.out.println("[HPS] EXECUTION ERROR " + ex.getMessage());
     }
 
     free(job);
