@@ -20,7 +20,7 @@ import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class SubmissionService {
-  
+
   @Inject
   SubmissionRepository submissionRepository;
 
@@ -46,7 +46,7 @@ public class SubmissionService {
     submission.user = user;
     submission.sourceCode = request.sourceCode;
     submission.status = 0;
-    
+
     submissionRepository.persist(submission);
 
     return new CreateSubmissionResponseDTO(submission.id);
@@ -57,7 +57,7 @@ public class SubmissionService {
     List<SubmissionDTO> submissionsList = new ArrayList<>();
 
     dbSubmissions.forEach(s -> {
-      submissionsList.add(new SubmissionDTO(s.sourceCode, s.id, s.status));
+      submissionsList.add(new SubmissionDTO(s.sourceCode, s.id, s.status, s.language.name));
     });
 
     return submissionsList;

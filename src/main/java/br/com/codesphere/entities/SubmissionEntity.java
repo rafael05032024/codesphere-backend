@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "submission")
 public class SubmissionEntity extends PanacheEntity {
-  
+
   @Column(name = "created_at", updatable = false, insertable = false)
   public LocalDateTime createdAt;
 
@@ -26,7 +26,7 @@ public class SubmissionEntity extends PanacheEntity {
   @Column(name = "comment")
   public String comment;
 
-  @Column(name = "source_code", length=4000)
+  @Column(name = "source_code", length = 4000)
   public String sourceCode;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -36,5 +36,9 @@ public class SubmissionEntity extends PanacheEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "problem_id")
   public ProblemEntity problem;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "language_id")
+  public LanguageEntity language;
 
 }
