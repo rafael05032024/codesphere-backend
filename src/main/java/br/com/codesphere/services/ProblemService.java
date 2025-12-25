@@ -38,14 +38,14 @@ public class ProblemService {
   CategoryRepository categoryRepository;
 
   @Transactional
-  public void create(CreateProblemDTO request) throws ApplicationException {
+  public void create(CreateProblemDTO request, Long userId) throws ApplicationException {
     CategoryEntity category = categoryRepository.findById(request.categoryId);
 
     if (Objects.isNull(category)) {
       throw new ApplicationException("Categoria inexistente", 404);
     }
 
-    UserEntity user = userRepository.findById(request.userId);
+    UserEntity user = userRepository.findById(userId);
     ProblemEntity problem = new ProblemEntity();
 
     String formattedTemplate = StringUtils
@@ -75,14 +75,14 @@ public class ProblemService {
   public ProblemListDTO listByCategory(long categoryId) {
     List<ProblemEntity> problems = problemRepository.findByCategoryId(categoryId);
     List<ProblemDTO> problemList = new ArrayList<>();
-    
 
     problems.forEach((p) -> {
-      ProblemDTO problem = new ProblemDTO(p.id, StringUtils.decodeBase64(p.templateHtml), p.title);
+      ProblemDTO problem = new ProblemDTO(p.id, p.timeLimit, StringUtils.decodeBase64(p.templateHtml), p.title,
+          p.author.name);
 
       problemList.add(problem);
     });
-    
+
     return new ProblemListDTO(problemList);
   }
 

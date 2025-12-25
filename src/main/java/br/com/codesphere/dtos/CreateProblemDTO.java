@@ -16,8 +16,6 @@ public class CreateProblemDTO {
   @Size(max = 4000, message = "Template deve ter no máximo 4000 caracteres")
   public String templateHtml;
 
-  public long userId;
-
   @NotNull
   public Integer timeLimit;
 
