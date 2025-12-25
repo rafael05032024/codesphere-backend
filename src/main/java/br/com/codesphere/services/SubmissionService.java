@@ -6,7 +6,9 @@ import java.util.Objects;
 
 import br.com.codesphere.dtos.CreateSubmissionDTO;
 import br.com.codesphere.dtos.CreateSubmissionResponseDTO;
-import br.com.codesphere.dtos.SubmissionDTO;
+import br.com.codesphere.dtos.SubmissionDetailDTO;
+import br.com.codesphere.dtos.SubmissionListDTO;
+import br.com.codesphere.dtos.SubmissionListItemDTO;
 import br.com.codesphere.entities.ProblemEntity;
 import br.com.codesphere.entities.SubmissionEntity;
 import br.com.codesphere.entities.UserEntity;
@@ -52,15 +54,29 @@ public class SubmissionService {
     return new CreateSubmissionResponseDTO(submission.id);
   }
 
-  public List<SubmissionDTO> listByUserId(Long userId) {
-    List<SubmissionEntity> dbSubmissions = submissionRepository.listByUserId(userId);
-    List<SubmissionDTO> submissionsList = new ArrayList<>();
+  public SubmissionListDTO listByUserId(Long userId) {
+    List<SubmissionEntity> submissions = submissionRepository.listByUserId(userId);
+    List<SubmissionListItemDTO> list = new ArrayList<>();
 
-    dbSubmissions.forEach(s -> {
-      submissionsList.add(new SubmissionDTO(s.sourceCode, s.id, s.status, s.language.name));
+    submissions.forEach(submission -> {
+      SubmissionListItemDTO item = new SubmissionListItemDTO(submission.id, submission.problem.title,
+          submission.problem.id, submission.status, submission.language.name, submission.createdAt);
+
+      list.add(item);
     });
 
-    return submissionsList;
+    return new SubmissionListDTO(list);
+  }
+
+  public SubmissionDetailDTO findById(long submissionId, long userId) throws ApplicationException {
+    SubmissionEntity submission = submissionRepository.findByIdAndUserId(userId, submissionId);
+
+    if (Objects.isNull(submission)) {
+      throw new ApplicationException("Registro não entrado!", 404);
+    }
+
+    return new SubmissionDetailDTO(submission.sourceCode, submission.id, submission.status, submission.language.name,
+        submission.comment, submission.problem.id, submission.problem.title);
   }
 
 }

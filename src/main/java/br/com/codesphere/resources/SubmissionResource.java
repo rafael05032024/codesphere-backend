@@ -1,12 +1,11 @@
 package br.com.codesphere.resources;
 
-import java.util.List;
-
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import br.com.codesphere.dtos.CreateSubmissionDTO;
 import br.com.codesphere.dtos.CreateSubmissionResponseDTO;
-import br.com.codesphere.dtos.SubmissionDTO;
+import br.com.codesphere.dtos.SubmissionDetailDTO;
+import br.com.codesphere.dtos.SubmissionListDTO;
 import br.com.codesphere.services.SubmissionService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -15,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
@@ -38,11 +38,20 @@ public class SubmissionResource {
   }
 
   @GET
-  public List<SubmissionDTO> list() {
+  public SubmissionListDTO list() {
     JsonNumber claim = jwt.getClaim("userId");
     Long userId = claim.longValue();
 
     return service.listByUserId(userId);
   }
-  
+
+  @GET
+  @Path("/{id}")
+  public SubmissionDetailDTO detail(@PathParam("id") long id) {
+    JsonNumber claim = jwt.getClaim("userId");
+    Long userId = claim.longValue();
+
+    return service.findById(id, userId);
+  }
+
 }

@@ -13,6 +13,10 @@ public class SubmissionRepository implements PanacheRepository<SubmissionEntity>
     return find("user.id", userId).list();
   }
 
+  public SubmissionEntity findByIdAndUserId(Long userId, Long id) {
+    return find("user.id = ?1 AND id = ?2", userId, id).firstResult();
+  };
+
   public List<SubmissionEntity> listByStatus(int status) {
     return find("status", status).list();
   }
