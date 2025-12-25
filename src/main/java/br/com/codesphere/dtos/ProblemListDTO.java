@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ProblemListDTO {
 
-  public List<ProblemDTO> result;
+  public List<ProblemListItemDTO> result;
 
-  public ProblemListDTO(List<ProblemDTO> problemList) {
+  public ProblemListDTO(List<ProblemListItemDTO> problemList) {
     this.result = problemList;
   }
 

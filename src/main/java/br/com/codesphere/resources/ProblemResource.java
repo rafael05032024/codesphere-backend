@@ -3,6 +3,7 @@ package br.com.codesphere.resources;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import br.com.codesphere.dtos.CreateProblemDTO;
+import br.com.codesphere.dtos.ProblemDetailDTO;
 import br.com.codesphere.dtos.ProblemListDTO;
 import br.com.codesphere.services.ProblemService;
 import io.quarkus.security.Authenticated;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
@@ -38,5 +40,11 @@ public class ProblemResource {
   @GET
   public ProblemListDTO list(@QueryParam("categoryId") long categoryId) {
     return service.listByCategory(categoryId);
+  }
+
+  @GET
+  @Path("/{id}")
+  public ProblemDetailDTO detail(@PathParam("id") long id) {
+    return service.findById(id);
   }
 }

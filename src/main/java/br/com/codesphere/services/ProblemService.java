@@ -6,8 +6,9 @@ import java.util.Objects;
 
 import br.com.codesphere.dtos.CreateProblemDTO;
 import br.com.codesphere.dtos.ProblemCaseTestDTO;
-import br.com.codesphere.dtos.ProblemDTO;
+import br.com.codesphere.dtos.ProblemDetailDTO;
 import br.com.codesphere.dtos.ProblemListDTO;
+import br.com.codesphere.dtos.ProblemListItemDTO;
 import br.com.codesphere.entities.CategoryEntity;
 import br.com.codesphere.entities.ProblemCaseTestEntity;
 import br.com.codesphere.entities.ProblemEntity;
@@ -74,16 +75,25 @@ public class ProblemService {
 
   public ProblemListDTO listByCategory(long categoryId) {
     List<ProblemEntity> problems = problemRepository.findByCategoryId(categoryId);
-    List<ProblemDTO> problemList = new ArrayList<>();
+    List<ProblemListItemDTO> problemList = new ArrayList<>();
 
-    problems.forEach((p) -> {
-      ProblemDTO problem = new ProblemDTO(p.id, p.timeLimit, StringUtils.decodeBase64(p.templateHtml), p.title,
-          p.author.name);
-
-      problemList.add(problem);
+    problems.forEach((problem) -> {
+      problemList.add(new ProblemListItemDTO(problem.title, problem.id));
     });
 
     return new ProblemListDTO(problemList);
+  }
+
+  public ProblemDetailDTO findById(long id) throws ApplicationException {
+    ProblemEntity problem = problemRepository.findById(id);
+
+    if (Objects.isNull(problem)) {
+      throw new ApplicationException("Problema não encontrado!", 404);
+    }
+
+    return new ProblemDetailDTO(problem.id, problem.timeLimit, StringUtils.decodeBase64(problem.templateHtml),
+        problem.title,
+        problem.author.name);
   }
 
 }
