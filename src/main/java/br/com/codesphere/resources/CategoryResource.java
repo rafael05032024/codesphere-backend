@@ -1,5 +1,8 @@
 package br.com.codesphere.resources;
 
+import java.util.List;
+
+import br.com.codesphere.dtos.CategoryListItemDTO;
 import br.com.codesphere.services.CategoryService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -17,7 +20,7 @@ public class CategoryResource {
     CategoryService service;
 
     @GET
-    public Object list() {
+    public List<CategoryListItemDTO> list() {
         return service.list();
     }
-} 
+}

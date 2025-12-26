@@ -13,4 +13,8 @@ public class ProblemRepository implements PanacheRepository<ProblemEntity> {
     return find("category.id", categoryId).list();
   }
 
+  public long countByCategoryId(long categoryId) {
+    return find("category.id", categoryId).count();
+  }
+
 }

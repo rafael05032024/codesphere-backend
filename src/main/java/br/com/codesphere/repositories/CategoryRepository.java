@@ -10,6 +10,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class CategoryRepository implements PanacheRepository<CategoryEntity> {
 
     public List<CategoryEntity> listAllOrderedByCreatedAt() {
-        return find("order by createdAt desc").list();
+        return find("order by createdAt asc").list();
     }
 }

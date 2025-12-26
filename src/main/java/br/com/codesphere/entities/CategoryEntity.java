@@ -16,6 +16,9 @@ public class CategoryEntity extends PanacheEntity {
     @Column(name = "updated_at", updatable = false, insertable = false)
     public LocalDateTime updatedAt;
 
+    @Column(name = "title")
+    public String title;
+
     @Column(name = "description")
     public String description;
 
