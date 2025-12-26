@@ -82,11 +82,12 @@ public class GitHubAuthService {
 
   }
 
-  public String buildLoginUrl() {
+  public String buildLoginUrl(String state) {
     return "https://github.com/login/oauth/authorize" +
         "?client_id=" + clientId +
         "&redirect_uri=" + redirectUri +
-        "&scope=user:email";
+        "&scope=user:email" +
+        "&state=" + state;
 
   }
 

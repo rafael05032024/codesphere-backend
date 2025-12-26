@@ -9,7 +9,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class CategoryRepository implements PanacheRepository<CategoryEntity> {
 
-    public List<CategoryEntity> listAllOrderedByCreatedAt() {
-        return find("order by createdAt asc").list();
-    }
+	public List<CategoryEntity> listAllOrderedByCreatedAt() {
+		return find("order by createdAt asc").list();
+	}
+
 }

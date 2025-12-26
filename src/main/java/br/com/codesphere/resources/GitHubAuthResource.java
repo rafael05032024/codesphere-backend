@@ -1,7 +1,6 @@
 package br.com.codesphere.resources;
 
 import java.net.URI;
-import java.util.Map;
 
 import br.com.codesphere.services.GitHubAuthService;
 import jakarta.inject.Inject;
@@ -18,16 +17,17 @@ public class GitHubAuthResource {
 
   @GET
   @Path("/login")
-  public Response login() {
-    return Response.seeOther(URI.create(gitHubAuthService.buildLoginUrl())).build();
+  public Response login(@QueryParam("redirect") String redirect) {
+    return Response.seeOther(URI.create(gitHubAuthService.buildLoginUrl(redirect))).build();
   }
 
   @GET
   @Path("/callback")
-  public Response callback(@QueryParam("code") String code) {
+  public Response callback(@QueryParam("code") String code, @QueryParam("state") String state) {
     String jwt = gitHubAuthService.auth(code);
+    String url = state + "?token=" + jwt;
 
-    return Response.ok(Map.of("token", jwt)).build();
+    return Response.seeOther(URI.create(url)).build();
   }
 
 }
