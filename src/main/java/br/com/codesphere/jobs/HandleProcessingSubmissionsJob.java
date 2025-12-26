@@ -19,7 +19,7 @@ import jakarta.transaction.Transactional;
 @Startup
 @ApplicationScoped
 @Transactional
-public class HandleProcessingSubmissions extends AbstractJob {
+public class HandleProcessingSubmissionsJob extends AbstractJob {
 
   @Inject
   SubmissionRepository submissionRepository;

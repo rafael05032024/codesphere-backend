@@ -30,7 +30,7 @@ import jakarta.transaction.Transactional;
 @Startup
 @ApplicationScoped
 @Transactional
-public class HandleCreatedSubmissions extends AbstractJob {
+public class HandleCreatedSubmissionsJob extends AbstractJob {
 
     @Inject
     SubmissionRepository submissionRepository;
