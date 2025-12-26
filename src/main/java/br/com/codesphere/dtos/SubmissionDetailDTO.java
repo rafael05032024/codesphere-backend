@@ -1,13 +1,22 @@
 package br.com.codesphere.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SubmissionDetailDTO {
 
+  @JsonProperty("source_code")
   public String sourceCode;
+
   public long id;
+
   public int status;
+
   public String observation;
+
   public String language;
+
   public SubmissionProblemDTO problem;
+
   public SubmissionCompilationDetailDTO compilation;
 
   public SubmissionDetailDTO(String sourceCode, long id, int status, String language, String observation,

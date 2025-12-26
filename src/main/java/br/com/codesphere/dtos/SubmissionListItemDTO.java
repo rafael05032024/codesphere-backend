@@ -2,12 +2,19 @@ package br.com.codesphere.dtos;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SubmissionListItemDTO {
 
   public long id;
+
   public SubmissionProblemDTO problem;
+
   public int status;
+
   public String language;
+
+  @JsonProperty("created_at")
   public LocalDateTime createdAt;
 
   public SubmissionListItemDTO(long id, String problemTitle, long problemId, int status, String languageName,

@@ -1,5 +1,7 @@
 package br.com.codesphere.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.NotBlank;
 
 public class ProblemCaseTestDTO {
@@ -8,6 +10,7 @@ public class ProblemCaseTestDTO {
   public String input;
 
   @NotBlank(message = "ExpectedOutput não pode ser vazio")
+  @JsonProperty("expected_output")
   public String expectedOutput;
 
 }
