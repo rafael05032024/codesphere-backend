@@ -12,7 +12,7 @@ import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class AuthService {
- 
+
   @Inject
   UserRepository userRepository;
 
@@ -28,5 +28,5 @@ public class AuthService {
 
     return new AuthResponseDTO(jwtService.sign(user.id, user.email));
   }
-  
+
 }
