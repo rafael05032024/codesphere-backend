@@ -75,13 +75,14 @@ public class ProblemService {
 
   public ProblemListDTO listByCategory(long categoryId) {
     List<ProblemEntity> problems = problemRepository.findByCategoryId(categoryId);
+    long total = problemRepository.countByCategoryId(categoryId);
     List<ProblemListItemDTO> problemList = new ArrayList<>();
 
     problems.forEach((problem) -> {
       problemList.add(new ProblemListItemDTO(problem.title, problem.id));
     });
 
-    return new ProblemListDTO(problemList);
+    return new ProblemListDTO(problemList, total);
   }
 
   public ProblemDetailDTO findById(long id) throws ApplicationException {

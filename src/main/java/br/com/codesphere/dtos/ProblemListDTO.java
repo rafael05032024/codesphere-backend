@@ -6,8 +6,11 @@ public class ProblemListDTO {
 
   public List<ProblemListItemDTO> result;
 
-  public ProblemListDTO(List<ProblemListItemDTO> problemList) {
+  public long total;
+
+  public ProblemListDTO(List<ProblemListItemDTO> problemList, long total) {
     this.result = problemList;
+    this.total = total;
   }
 
 }
