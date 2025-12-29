@@ -25,9 +25,9 @@ public class GitHubAuthResource {
   @Path("/callback")
   public Response callback(@QueryParam("code") String code, @QueryParam("state") String state) {
     String jwt = gitHubAuthService.auth(code);
-    String url = state;
+    String url = state + "?token=" + jwt;
 
-    return Response.seeOther(URI.create(url)).header("access_token", jwt).build();
+    return Response.seeOther(URI.create(url)).build();
   }
 
 }
