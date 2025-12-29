@@ -1,5 +1,7 @@
 package br.com.codesphere.dtos;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ProblemDetailDTO {
@@ -26,8 +28,12 @@ public class ProblemDetailDTO {
   @JsonProperty("category")
   public ProblemListItemCategoryDTO category;
 
+  @JsonProperty("exmple_test_cases")
+  public List<ProblemListItemTestCaseDTO> exmpleTestCases;
+
   public ProblemDetailDTO(long id, int timeLimit, String descriptionText, String inputText, String outputText,
-      String title, String author, String categoryName, long CategoryId) {
+      String title, String author, String categoryName, long CategoryId,
+      List<ProblemListItemTestCaseDTO> exmpleTestCases) {
     this.id = id;
     this.timeLimit = timeLimit;
     this.descriptionText = descriptionText;
@@ -36,5 +42,6 @@ public class ProblemDetailDTO {
     this.title = title;
     this.authorName = author;
     this.category = new ProblemListItemCategoryDTO(categoryName, CategoryId);
+    this.exmpleTestCases = exmpleTestCases;
   }
 }

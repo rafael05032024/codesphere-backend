@@ -9,6 +9,7 @@ import br.com.codesphere.dtos.ProblemCaseTestDTO;
 import br.com.codesphere.dtos.ProblemDetailDTO;
 import br.com.codesphere.dtos.ProblemListDTO;
 import br.com.codesphere.dtos.ProblemListItemDTO;
+import br.com.codesphere.dtos.ProblemListItemTestCaseDTO;
 import br.com.codesphere.entities.CategoryEntity;
 import br.com.codesphere.entities.ProblemCaseTestEntity;
 import br.com.codesphere.entities.ProblemEntity;
@@ -91,10 +92,20 @@ public class ProblemService {
       throw new ApplicationException("Problema não encontrado!", 404);
     }
 
+    List<ProblemCaseTestEntity> _exampleTestsCases = problemCaseTestRepository.listProblemExampleTestsCases(id);
+    List<ProblemListItemTestCaseDTO> exampleTestCases = new ArrayList<>();
+
+    for (ProblemCaseTestEntity exampleTestCase : _exampleTestsCases) {
+      ProblemListItemTestCaseDTO item = new ProblemListItemTestCaseDTO(exampleTestCase.input,
+          exampleTestCase.expectedOutput);
+
+      exampleTestCases.add(item);
+    }
+
     return new ProblemDetailDTO(problem.id, problem.timeLimit, problem.description, problem.inputText,
         problem.outputText,
         problem.title,
-        problem.author.name, problem.category.title, problem.category.id);
+        problem.author.name, problem.category.title, problem.category.id, exampleTestCases);
   }
 
 }

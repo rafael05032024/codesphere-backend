@@ -13,4 +13,8 @@ public class ProblemCaseTestRepository implements PanacheRepository<ProblemCaseT
     return find("problem.id", problemId).list();
   }
 
+  public List<ProblemCaseTestEntity> listProblemExampleTestsCases(Long problemId) {
+    return find("problem.id = ?1 AND isExample = ?2", problemId, true).list();
+  }
+
 }
