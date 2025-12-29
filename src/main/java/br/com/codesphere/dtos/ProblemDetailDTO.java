@@ -28,8 +28,8 @@ public class ProblemDetailDTO {
   @JsonProperty("category")
   public ProblemListItemCategoryDTO category;
 
-  @JsonProperty("exmple_test_cases")
-  public List<ProblemListItemTestCaseDTO> exmpleTestCases;
+  @JsonProperty("example_test_cases")
+  public List<ProblemListItemTestCaseDTO> exampleTestCases;
 
   public ProblemDetailDTO(long id, int timeLimit, String descriptionText, String inputText, String outputText,
       String title, String author, String categoryName, long CategoryId,
@@ -42,6 +42,6 @@ public class ProblemDetailDTO {
     this.title = title;
     this.authorName = author;
     this.category = new ProblemListItemCategoryDTO(categoryName, CategoryId);
-    this.exmpleTestCases = exmpleTestCases;
+    this.exampleTestCases = exmpleTestCases;
   }
 }
