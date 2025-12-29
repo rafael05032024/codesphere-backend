@@ -22,6 +22,9 @@ public class ProblemCaseTestEntity extends PanacheEntity {
   @Column(name = "input")
   public String input;
 
+  @Column(name = "is_example")
+  public Boolean isExample;
+
   @Column(name = "expected_output")
   public String expectedOutput;
 

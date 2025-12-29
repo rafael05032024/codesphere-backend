@@ -49,11 +49,10 @@ public class ProblemService {
     UserEntity user = userRepository.findById(userId);
     ProblemEntity problem = new ProblemEntity();
 
-    String formattedTemplate = StringUtils
-        .encodeBase64(StringUtils.removeAllNewLines(request.templateHtml));
-
     problem.author = user;
-    problem.templateHtml = formattedTemplate;
+    problem.description = request.descriptionText;
+    problem.inputText = request.inputText;
+    problem.outputText = request.outputText;
     problem.timeLimit = request.timeLimit;
     problem.category = category;
     problem.title = request.title;
@@ -62,15 +61,15 @@ public class ProblemService {
 
     for (int i = 0; i < request.testCases.size(); i++) {
       ProblemCaseTestEntity problemCaseTest = new ProblemCaseTestEntity();
-      ProblemCaseTestDTO problemCaseTestDTO = request.testCases.get(i);
+      ProblemCaseTestDTO body = request.testCases.get(i);
 
-      problemCaseTest.input = StringUtils.encodeBase64(problemCaseTestDTO.input);
-      problemCaseTest.expectedOutput = StringUtils.encodeBase64(problemCaseTestDTO.expectedOutput);
+      problemCaseTest.input = StringUtils.encodeBase64(body.input);
+      problemCaseTest.expectedOutput = StringUtils.encodeBase64(body.expectedOutput);
       problemCaseTest.problem = problem;
+      problemCaseTest.isExample = body.isExample;
 
       problemCaseTestRepository.persist(problemCaseTest);
     }
-
   }
 
   public ProblemListDTO listByCategory(long categoryId) {
@@ -92,9 +91,10 @@ public class ProblemService {
       throw new ApplicationException("Problema não encontrado!", 404);
     }
 
-    return new ProblemDetailDTO(problem.id, problem.timeLimit, StringUtils.decodeBase64(problem.templateHtml),
+    return new ProblemDetailDTO(problem.id, problem.timeLimit, problem.description, problem.inputText,
+        problem.outputText,
         problem.title,
-        problem.author.name, problem.category.id);
+        problem.author.name, problem.category.title, problem.category.id);
   }
 
 }

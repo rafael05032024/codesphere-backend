@@ -9,23 +9,32 @@ public class ProblemDetailDTO {
   @JsonProperty("time_limit")
   public int timeLimit;
 
-  public String template;
+  @JsonProperty("description_text")
+  public String descriptionText;
+
+  @JsonProperty("input_text")
+  public String inputText;
+
+  @JsonProperty("output_text")
+  public String outputText;
 
   public String title;
 
   @JsonProperty("author_name")
   public String authorName;
 
-  @JsonProperty("category_id")
-  public long categoryId;
+  @JsonProperty("category")
+  public ProblemListItemCategoryDTO category;
 
-  public ProblemDetailDTO(long id, int timeLimit, String template, String title, String author, long categoryId) {
+  public ProblemDetailDTO(long id, int timeLimit, String descriptionText, String inputText, String outputText,
+      String title, String author, String categoryName, long CategoryId) {
     this.id = id;
     this.timeLimit = timeLimit;
-    this.template = template;
+    this.descriptionText = descriptionText;
+    this.inputText = inputText;
+    this.outputText = outputText;
     this.title = title;
     this.authorName = author;
-    this.categoryId = categoryId;
+    this.category = new ProblemListItemCategoryDTO(categoryName, CategoryId);
   }
-
 }

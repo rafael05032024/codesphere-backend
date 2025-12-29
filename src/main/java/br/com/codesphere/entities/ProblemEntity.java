@@ -19,8 +19,14 @@ public class ProblemEntity extends PanacheEntity {
   @Column(name = "updated_at", updatable = false, insertable = false)
   public LocalDateTime updatedAt;
 
-  @Column(name = "template_html", length=4000)
-  public String templateHtml;
+  @Column(name = "description", length = 4000)
+  public String description;
+
+  @Column(name = "input_text", length = 4000)
+  public String inputText;
+
+  @Column(name = "output_text", length = 4000)
+  public String outputText;
 
   @Column(name = "title")
   public String title;
