@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
 @Path("/auth/github")
@@ -25,9 +26,16 @@ public class GitHubAuthResource {
   @Path("/callback")
   public Response callback(@QueryParam("code") String code, @QueryParam("state") String state) {
     String jwt = gitHubAuthService.auth(code);
-    String url = state + "?token=" + jwt;
+    String url = state;
 
-    return Response.seeOther(URI.create(url)).build();
+    String cookieHeader = "access_token=" + jwt +
+        "; Path=/" +
+        "; Domain=.exemplo.com" +
+        "; HttpOnly" +
+        "; Secure" +
+        "; SameSite=None";
+
+    return Response.seeOther(URI.create(url)).header(HttpHeaders.SET_COOKIE, cookieHeader).build();
   }
 
 }
