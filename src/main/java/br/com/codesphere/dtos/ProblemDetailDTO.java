@@ -16,12 +16,16 @@ public class ProblemDetailDTO {
   @JsonProperty("author_name")
   public String authorName;
 
-  public ProblemDetailDTO(long id, int timeLimit, String template, String title, String author) {
+  @JsonProperty("category_id")
+  public long categoryId;
+
+  public ProblemDetailDTO(long id, int timeLimit, String template, String title, String author, long categoryId) {
     this.id = id;
     this.timeLimit = timeLimit;
     this.template = template;
     this.title = title;
     this.authorName = author;
+    this.categoryId = categoryId;
   }
 
 }

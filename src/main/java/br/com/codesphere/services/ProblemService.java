@@ -94,7 +94,7 @@ public class ProblemService {
 
     return new ProblemDetailDTO(problem.id, problem.timeLimit, StringUtils.decodeBase64(problem.templateHtml),
         problem.title,
-        problem.author.name);
+        problem.author.name, problem.category.id);
   }
 
 }
