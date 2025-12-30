@@ -13,6 +13,7 @@ import br.com.codesphere.dtos.ProblemListItemTestCaseDTO;
 import br.com.codesphere.entities.CategoryEntity;
 import br.com.codesphere.entities.ProblemCaseTestEntity;
 import br.com.codesphere.entities.ProblemEntity;
+import br.com.codesphere.entities.SubmissionEntity;
 import br.com.codesphere.entities.UserEntity;
 import br.com.codesphere.exception.ApplicationException;
 import br.com.codesphere.repositories.CategoryRepository;
@@ -78,9 +79,15 @@ public class ProblemService {
     long total = problemRepository.countByCategoryId(categoryId);
     List<ProblemListItemDTO> problemList = new ArrayList<>();
 
-    problems.forEach((problem) -> {
-      problemList.add(new ProblemListItemDTO(problem.title, problem.id));
-    });
+    for (ProblemEntity problem : problems) {
+      List<SubmissionEntity> submissions = problem.submissions;
+
+      boolean solved = !submissions.stream().filter((value) -> value.status == 2).findFirst().isEmpty();
+      boolean attempted = solved ? true
+          : !submissions.stream().filter((value) -> value.status == 3).findFirst().isEmpty();
+
+      problemList.add(new ProblemListItemDTO(problem.title, problem.id, solved, attempted));
+    }
 
     return new ProblemListDTO(problemList, total);
   }

@@ -21,4 +21,15 @@ public class SubmissionRepository implements PanacheRepository<SubmissionEntity>
     return find("status", status).list();
   }
 
+  public List<Integer> listStatusByProblemId(long problemId) {
+    return getEntityManager()
+        .createQuery("""
+                select s.status
+                from SubmissionEntity s
+                where s.problem.id = :problemId
+            """, Integer.class)
+        .setParameter("problemId", problemId)
+        .getResultList();
+  }
+
 }
