@@ -58,12 +58,12 @@ public class HandleProcessingSubmissionsJob extends AbstractJob {
           return;
         }
 
-        compilation.memory = response.memory;
-        compilation.time = Double.parseDouble(response.time);
-
-        compilation.persist();
-
         if (response.statusId == 3) {
+          compilation.memory = response.memory;
+          compilation.time = Double.parseDouble(response.time);
+
+          compilation.persist();
+
           if (!response.stdOut.equals(compilation.problemCaseTest.expectedOutput)) {
             System.out.println(compilation.problemCaseTest.expectedOutput + " different from " + response.stdOut);
 
