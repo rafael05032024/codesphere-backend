@@ -2,9 +2,12 @@ package br.com.codesphere.resources;
 
 import java.net.URI;
 
+import br.com.codesphere.dtos.AuthResponseDTO;
+import br.com.codesphere.integration.github.dtos.GitHubExchangeCodeDTO;
 import br.com.codesphere.services.GitHubAuthService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -31,6 +34,15 @@ public class GitHubAuthResource {
     String cookieHeader = "access_token=" + jwt + "; Path=/" + "; HttpOnly"
         + "; SameSite=Lax";
     return Response.seeOther(URI.create(url)).header(HttpHeaders.SET_COOKIE, cookieHeader).build();
+  }
+
+  @POST
+  @Path("/exchange")
+  public AuthResponseDTO exchange(GitHubExchangeCodeDTO body) {
+    String code = body.code;
+    String jwt = gitHubAuthService.auth(code);
+
+    return new AuthResponseDTO(jwt);
   }
 
 }
