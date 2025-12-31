@@ -10,11 +10,14 @@ import br.com.codesphere.integration.judge0.Judge0RestClient;
 import br.com.codesphere.integration.judge0.dtos.Judge0SubmissionResponseDTO;
 import br.com.codesphere.repositories.SubmissionCompilationRepository;
 import br.com.codesphere.repositories.SubmissionRepository;
+import br.com.codesphere.services.SSEService;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.sse.OutboundSseEvent;
+import jakarta.ws.rs.sse.Sse;
 
 @Startup
 @ApplicationScoped
@@ -26,6 +29,12 @@ public class HandleProcessingSubmissionsJob extends AbstractJob {
 
   @Inject
   SubmissionCompilationRepository submissionCompilationRepository;
+
+  @Inject
+  SSEService sseService;
+
+  @Inject
+  Sse sse;
 
   @Inject
   @RestClient
@@ -67,20 +76,33 @@ public class HandleProcessingSubmissionsJob extends AbstractJob {
           if (!response.stdOut.equals(compilation.problemCaseTest.expectedOutput)) {
             System.out.println(compilation.problemCaseTest.expectedOutput + " different from " + response.stdOut);
 
+            String observation = "result not match";
+
             submission.status = 3;
-            submission.comment = "result not match";
+            submission.comment = observation;
 
             submission.persist();
+
+            dispatchEvent(submission.id.toString(), "3|" + observation);
+
           } else {
             submission.status = 2;
 
             submission.persist();
+
+            dispatchEvent(submission.id.toString(), "2");
+
           }
         } else {
+          String observation = "compilation failed";
+
           submission.status = 3;
-          submission.comment = "compilation failed";
+          submission.comment = observation;
 
           submission.persist();
+
+          dispatchEvent(submission.id.toString(), "3|" + observation);
+
         }
       }
 
@@ -90,6 +112,18 @@ public class HandleProcessingSubmissionsJob extends AbstractJob {
   @Scheduled(every = "10s")
   public void scheduled() {
     execute();
+  }
+
+  private void dispatchEvent(String id, String data) {
+
+    System.out.println("FIRING UP SUBMISSION_EVENT " + id);
+
+    OutboundSseEvent event = sse.newEventBuilder()
+        .name("SUBMISSION_EVENT")
+        .data(String.class, data)
+        .build();
+
+    sseService.sendTo(id, event);
   }
 
 }
