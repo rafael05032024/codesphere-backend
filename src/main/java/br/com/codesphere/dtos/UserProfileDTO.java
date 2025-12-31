@@ -18,15 +18,19 @@ public class UserProfileDTO {
   @JsonProperty("login")
   public String login;
 
+  @JsonProperty("email")
+  public String email;
+
   @JsonProperty("created_at")
   public LocalDateTime createdAt;
 
   public UserProfileDTO(String avatarUrl, long totalSubmissions, long totalResolved, String login,
-      LocalDateTime createdAt) {
+      String email, LocalDateTime createdAt) {
     this.avatarUrl = avatarUrl;
     this.totalSubmissions = totalSubmissions;
     this.totalResolved = totalResolved;
     this.login = login;
+    this.email = email;
     this.createdAt = createdAt;
   }
 

@@ -17,7 +17,8 @@ public class UserService {
     UserEntity user = userRepository.findById(userId);
     long totalSolved = user.submissions.stream().filter((s) -> s.status == 2).count();
 
-    return new UserProfileDTO(user.avatar, user.submissions.size(), totalSolved, user.login, user.createdAt);
+    return new UserProfileDTO(user.avatar, user.submissions.size(), totalSolved, user.login, user.email,
+        user.createdAt);
 
   }
 
