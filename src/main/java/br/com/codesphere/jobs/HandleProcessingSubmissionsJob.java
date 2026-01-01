@@ -1,6 +1,7 @@
 package br.com.codesphere.jobs;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -73,9 +74,7 @@ public class HandleProcessingSubmissionsJob extends AbstractJob {
 
           compilation.persist();
 
-          if (!response.stdOut.equals(compilation.problemCaseTest.expectedOutput)) {
-            System.out.println(compilation.problemCaseTest.expectedOutput + " different from " + response.stdOut);
-
+          if (Objects.isNull(response.stdOut) || !response.stdOut.equals(compilation.problemCaseTest.expectedOutput)) {
             String observation = "result not match";
 
             submission.status = 3;
