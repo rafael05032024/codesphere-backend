@@ -115,4 +115,21 @@ public class ProblemService {
         problem.author.name, problem.category.title, problem.category.id, exampleTestCases);
   }
 
+  public ProblemListDTO search(String term) {
+    List<ProblemEntity> problems = problemRepository.search(term);
+    List<ProblemListItemDTO> problemList = new ArrayList<>();
+
+    for (ProblemEntity problem : problems) {
+      List<SubmissionEntity> submissions = problem.submissions;
+
+      boolean solved = !submissions.stream().filter((value) -> value.status == 2).findFirst().isEmpty();
+      boolean attempted = solved ? true
+          : !submissions.stream().filter((value) -> value.status == 3).findFirst().isEmpty();
+
+      problemList.add(new ProblemListItemDTO(problem.title, problem.id, solved, attempted));
+    }
+
+    return new ProblemListDTO(problemList, 0);
+
+  }
 }

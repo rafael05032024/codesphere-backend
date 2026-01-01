@@ -43,6 +43,12 @@ public class ProblemResource {
   }
 
   @GET
+  @Path("/search")
+  public ProblemListDTO search(@QueryParam("term") String term) {
+    return service.search(term);
+  }
+
+  @GET
   @Path("/{id}")
   public ProblemDetailDTO detail(@PathParam("id") long id) {
     return service.findById(id);
