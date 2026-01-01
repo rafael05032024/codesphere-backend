@@ -15,7 +15,11 @@ public class UserService {
   public UserProfileDTO getById(Long userId) {
 
     UserEntity user = userRepository.findById(userId);
-    long totalSolved = user.submissions.stream().filter((s) -> s.status == 2).count();
+    long totalSolved = user.submissions.stream()
+        .filter(s -> s.status == 3)
+        .map(s -> s.problem.id)
+        .distinct()
+        .count();
 
     return new UserProfileDTO(user.avatar, user.submissions.size(), totalSolved, user.login, user.email,
         user.createdAt);
