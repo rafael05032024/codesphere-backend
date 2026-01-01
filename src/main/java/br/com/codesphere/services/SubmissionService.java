@@ -100,8 +100,8 @@ public class SubmissionService {
     double totalTime = 0;
 
     for (SubmissionCompilationEntity c : compilations) {
-      totalMemory += c.memory;
-      totalTime += c.time;
+      totalMemory += Objects.isNull(c.memory) ? 0 : c.memory;
+      totalTime += Objects.isNull(c.time) ? 0 : c.time;
     }
 
     double averageMemory = totalMemory / compilations.size();
