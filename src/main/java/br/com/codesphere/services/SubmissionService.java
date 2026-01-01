@@ -104,8 +104,9 @@ public class SubmissionService {
       totalTime += Objects.isNull(c.time) ? 0 : c.time;
     }
 
-    double averageMemory = totalMemory / compilations.size();
-    double averageTime = totalTime / compilations.size();
+    double averageMemory = totalMemory == 0 ? 0 : totalMemory / compilations.size();
+    double averageTime = totalTime == 0 ? 0 : totalTime / compilations.size();
+
     int size = StringUtils.getSizeInBytes(submission.sourceCode);
 
     return new SubmissionDetailDTO(submission.sourceCode, submission.id, submission.status, submission.language.name,
