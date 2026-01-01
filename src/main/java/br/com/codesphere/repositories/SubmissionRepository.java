@@ -4,13 +4,14 @@ import java.util.List;
 
 import br.com.codesphere.entities.SubmissionEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class SubmissionRepository implements PanacheRepository<SubmissionEntity> {
 
   public List<SubmissionEntity> listByUserId(Long userId) {
-    return find("user.id", userId).list();
+    return find("user.id", Sort.by("createdAt").descending(), userId).list();
   }
 
   public SubmissionEntity findByIdAndUserId(Long userId, Long id) {
