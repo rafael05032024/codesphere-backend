@@ -129,7 +129,7 @@ public class ProblemService {
       problemList.add(new ProblemListItemDTO(problem.title, problem.id, solved, attempted));
     }
 
-    return new ProblemListDTO(problemList, 0);
+    return new ProblemListDTO(problemList, problemList.size());
 
   }
 }

@@ -20,7 +20,7 @@ public class ProblemRepository implements PanacheRepository<ProblemEntity> {
 
   public List<ProblemEntity> search(String term) {
     if (term == null || term.isBlank()) {
-      return List.of();
+      return find("").list();
     }
 
     String search = "%" + term.toLowerCase() + "%";
