@@ -17,4 +17,7 @@ public class LanguageEntity extends PanacheEntityBase {
   @Column(name = "name")
   public String name;
 
+  @Column(name = "default_template", length = 4000)
+  public String template;
+
 }
