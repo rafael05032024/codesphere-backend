@@ -19,10 +19,10 @@ public class ProblemCaseTestEntity extends PanacheEntity {
   @Column(name = "updated_at", updatable = false, insertable = false)
   public LocalDateTime updatedAt;
 
-  @Column(name = "input")
+  @Column(name = "input", length = 10000)
   public String input;
 
-  @Column(name = "is_example", length = 10000)
+  @Column(name = "is_example")
   public Boolean isExample;
 
   @Column(name = "expected_output", length = 10000)
