@@ -20,7 +20,6 @@ import br.com.codesphere.repositories.CategoryRepository;
 import br.com.codesphere.repositories.ProblemCaseTestRepository;
 import br.com.codesphere.repositories.ProblemRepository;
 import br.com.codesphere.repositories.UserRepository;
-import br.com.codesphere.utils.StringUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -65,8 +64,8 @@ public class ProblemService {
       ProblemCaseTestEntity problemCaseTest = new ProblemCaseTestEntity();
       ProblemCaseTestDTO body = request.testCases.get(i);
 
-      problemCaseTest.input = StringUtils.encodeBase64(body.input);
-      problemCaseTest.expectedOutput = StringUtils.encodeBase64(body.expectedOutput);
+      problemCaseTest.input = body.input;
+      problemCaseTest.expectedOutput = body.expectedOutput;
       problemCaseTest.problem = problem;
       problemCaseTest.isExample = body.isExample;
 
