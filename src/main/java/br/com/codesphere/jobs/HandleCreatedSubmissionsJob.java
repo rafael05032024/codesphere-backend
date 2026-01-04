@@ -85,7 +85,8 @@ public class HandleCreatedSubmissionsJob extends AbstractJob {
 
 				System.out.println("Submitting teste case " + testCase.id);
 
-				Judge0SubmissionRequestDTO request = new Judge0SubmissionRequestDTO(52, submission.sourceCode,
+				Judge0SubmissionRequestDTO request = new Judge0SubmissionRequestDTO(submission.language.id,
+						submission.sourceCode,
 						testCase.input);
 
 				Judge0TokenDTO response = judge0.createSubmission(true, false, request);
